@@ -3,41 +3,64 @@
   <groupId>org.platkmframework</groupId>
   <artifactId>platkmframework-jpa-orm</artifactId>
   <version>1.0.0-beta</version> 
-  <build> 
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.0</version>
-        <configuration>
-          <release>20</release>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> 
+  </properties>
+  
+    <build>
+        <plugins>
+	      <plugin>
+	        <artifactId>maven-compiler-plugin</artifactId>
+	        <version>3.8.0</version>
+	        <configuration>
+	          <release>20</release>
+	        </configuration>
+	      </plugin>			
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin> 
+        </plugins>
+    </build>  
+    
+	<distributionManagement>
+		<repository>
+			<id>platkmframework</id>
+			<name>Releases</name>
+			<url>https://nexus.platkmframework.org/repository/platkmframework-releases/</url>
+		</repository>
+	 
+		<snapshotRepository>
+			<id>platkmframework</id>
+			<name>Snapshot</name>
+			<url>https://nexus.platkmframework.org/repository/platkmframework-snapshot/</url>
+		</snapshotRepository>
+	
+	</distributionManagement>
   <dependencies>
 	<dependency>
 	  <groupId>org.platkmframework</groupId>
 	  <artifactId>platkmframework-jpa</artifactId>
 	    <version>1.0.0-beta</version>
-	</dependency>
-	<dependency>
-	  <groupId>org.platkmframework</groupId>
-	  <artifactId>platkmframework-database-query-common</artifactId>
-	    <version>1.0.0-beta</version>
-	</dependency>
-	<dependency>
-	  <groupId>org.platkmframework</groupId>
-	  <artifactId>platkmframework-util</artifactId>
-	    <version>1.0.0-beta</version>
-	</dependency>
-   	<dependency>
-	    <groupId>org.platkmframework</groupId>
-	    <artifactId>platkmframework-common-service</artifactId>
-	      <version>1.0.0-beta</version>
-	</dependency>
+	</dependency> 
 	<dependency>
 		<groupId>org.platkmframework</groupId>
 		<artifactId>platkmframework-content</artifactId>
+		  <version>1.0.0-beta</version>
+	</dependency>
+	<dependency>
+		<groupId>org.platkmframework</groupId>
+		<artifactId>platkmframework-doi</artifactId>
 		  <version>1.0.0-beta</version>
 	</dependency>
 	<dependency>
@@ -50,51 +73,10 @@
   		<artifactId>platkmframework-databasereader</artifactId>
   		  <version>1.0.0-beta</version>
   	</dependency>
-  	<dependency>
-	    <groupId>org.apache.logging.log4j</groupId>
-	    <artifactId>log4j-core</artifactId>
-	    <version>2.17.0</version>
-	</dependency>
-	<dependency>
-	    <groupId>org.apache.logging.log4j</groupId>
-	    <artifactId>log4j-api</artifactId>
-	    <version>2.17.0</version>
-	</dependency> 
-	<dependency>
-	    <groupId>javax.persistence</groupId>
-	    <artifactId>javax.persistence-api</artifactId>
-	    <version>2.2</version>
-	</dependency> 
-	<dependency>
-	    <groupId>org.apache.commons</groupId>
-	    <artifactId>commons-pool2</artifactId>
-	    <version>2.11.1</version>
-	</dependency> 
 	<dependency>
 	    <groupId>org.apache.commons</groupId>
 	    <artifactId>commons-dbcp2</artifactId>
 	    <version>2.9.0</version>
 	</dependency> 
-	<dependency>
-	    <groupId>org.junit.jupiter</groupId>
-	    <artifactId>junit-jupiter-engine</artifactId>
-	    <version>5.0.0</version>
-	    <scope>compile</scope>
-	</dependency>
-  	<dependency>
-  		<groupId>javax.xml.bind</groupId>
-  		<artifactId>jaxb-api</artifactId>
-  		<version>2.3.1</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.sun.xml.bind</groupId>
-  		<artifactId>jaxb-impl</artifactId>
-  		<version>2.3.1</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.sun.istack</groupId>
-  		<artifactId>istack-commons-runtime</artifactId>
-  		<version>4.1.1</version>
-  	</dependency>
   </dependencies> 
 </project>

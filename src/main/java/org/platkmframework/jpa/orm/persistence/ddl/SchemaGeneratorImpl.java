@@ -20,12 +20,12 @@ package org.platkmframework.jpa.orm.persistence.ddl;
 
 import java.util.Map;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 import org.apache.commons.lang3.StringUtils;
 import org.platkmframework.jpa.dll.SchemaGenerator;
 import org.platkmframework.jpa.persistence.PersistenceUnit;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 /**
  *   Author: 

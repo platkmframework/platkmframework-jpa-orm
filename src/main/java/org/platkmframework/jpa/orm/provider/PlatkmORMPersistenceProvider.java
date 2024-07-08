@@ -17,25 +17,29 @@ import org.platkmframework.jpa.orm.database.sqlserver.mapping.SqlSentencesProces
 import org.platkmframework.jpa.orm.factory.PlatkmPooledEntityManagerFactory;
 import org.platkmframework.jpa.orm.persistence.ORMPersistenceUnit;
 import org.platkmframework.jpa.orm.persistence.ddl.SchemaGeneratorImpl;
+import org.platkmframework.jpa.persistence.PersistenceInfo;
+import org.platkmframework.jpa.persistence.PersistenceInfoUtil;
 import org.platkmframework.jpa.persistence.PlatkmEntityManagerFactory;
 import org.platkmframework.jpa.persistence.PlatkmPersistenceProvider;
-import org.platkmframework.jpa.persistence.reader.PersistenceInfo;
-import org.platkmframework.jpa.persistence.reader.PlatkmPersistenceFileParse;
+import org.platkmframework.util.error.InvocationException;
 import org.platkmframework.util.manager.ManagerException;
+import org.platkmframework.util.reflection.ReflectionUtil;
 
-public class PlatkmORMPersistenceProvider extends PlatkmPersistenceProvider  {
+import jakarta.persistence.PersistenceException;
+import jakarta.persistence.spi.PersistenceProvider;
+
+public class PlatkmORMPersistenceProvider extends PlatkmPersistenceProvider  implements PersistenceProvider{
 
 	public PlatkmORMPersistenceProvider() {
 		super();
 	}
 	 
 	@Override
-	protected void createPlakmEntityManagerFactory(String persistenceUnitName, Map map) {
-		
+	protected PlatkmEntityManagerFactory createPlakmEntityManagerFactory(String persistenceUnitName, Map map) {
 		
 		try {
 			
-			PersistenceInfo persistenceInfo = PlatkmPersistenceFileParse.persistenceInfoList.stream().filter((info)-> info.getName().equals(persistenceUnitName)).findFirst().orElse(null);
+			PersistenceInfo persistenceInfo =  PersistenceInfoUtil.instance().getPersistenceInfoList().stream().filter((info)-> info.getName().equals(persistenceUnitName)).findFirst().orElse(null);
 			ORMPersistenceUnit oRMPersistenceUnit = createORMPersistenceUnit(persistenceInfo);
 
 			
@@ -49,14 +53,12 @@ public class PlatkmORMPersistenceProvider extends PlatkmPersistenceProvider  {
 				oRMPersistenceUnit.setSqlSentencesProcessor(new SqlSentencesProcessorSqlServer());
 			}
 			
-			mapFactory.put(oRMPersistenceUnit.getName(), new PlatkmEntityManagerFactory(oRMPersistenceUnit, 
+			return new PlatkmEntityManagerFactory(oRMPersistenceUnit, 
 					 												new PlatkmPooledEntityManagerFactory(oRMPersistenceUnit),
-					 												new SchemaGeneratorImpl()));
-	
+					 												new SchemaGeneratorImpl());
 			
 		} catch (ManagerException e) {
-			e.printStackTrace();
-			System.exit(-1);
+			throw new PersistenceException(e);
 		}
 		 
 	}
@@ -74,13 +76,22 @@ public class PlatkmORMPersistenceProvider extends PlatkmPersistenceProvider  {
 		if(StringUtils.isBlank(jdbcDriver)) throw new PlatkmJpaException(" No se encontró un mapper para la base de datos");
 		
 		DatabaseMapper databaseMapper = null; 
-		List<Object> list = ObjectContainer.instance().getListObjectByAnnontation(DatabaseConfig.class);
-		for (Object object : list) {
-			if(object.getClass().getAnnotation(DatabaseConfig.class).name().equals(jdbcDriver)){
-				databaseMapper = (DatabaseMapper) object;
-				break;
+		String mapperClass = persistenceInfo.getStringPropertyValue(JpaPropertyConstant.ORG_PLATKMFRAMEWORK_JPA_MAPPER_CLASS);
+		if(StringUtils.isNotBlank(mapperClass)) {
+			try {
+				databaseMapper = (DatabaseMapper) ReflectionUtil.createInstance(mapperClass);
+			} catch (InvocationException e) {
+				throw new ManagerException("No se pudo crear una instancia de la clase mapper->" + e.getMessage());
 			}
-		} 
+		}else {
+			List<Object> list = ObjectContainer.instance().getListObjectByAnnontation(DatabaseConfig.class);
+			for (Object object : list) {
+				if(object.getClass().getAnnotation(DatabaseConfig.class).name().equals(jdbcDriver)){
+					databaseMapper = (DatabaseMapper) object;
+					break;
+				}
+			} 
+		}
 		
 		if(databaseMapper == null) throw new PlatkmJpaException(" No se encontró un mapper para la base de datos");
 		oRMPersistenceUnit.setDatabaseMapper(databaseMapper);		
@@ -98,7 +109,7 @@ public class PlatkmORMPersistenceProvider extends PlatkmPersistenceProvider  {
 		
 		QueryManager queryManager = new QueryManager(databaseMapper.getDatabaseName());
 		//Default
-		queryManager.readModel("system", PlatkmORMPersistenceProvider.class.getResourceAsStream("/queries/system/model.xml"));
+		queryManager.readModel("system", getClass().getClassLoader().getResourceAsStream("queries/system/model.xml"));
 
 		String queriesManagerPath = persistenceInfo.getStringPropertyValue(JpaPropertyConstant.ORG_PLATKMFRAMEWORK_DATABASE_QUERYMANAGERS_PATH);
 		if(StringUtils.isNotBlank(queriesManagerPath)) {

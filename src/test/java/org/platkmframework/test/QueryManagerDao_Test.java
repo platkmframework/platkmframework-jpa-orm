@@ -20,13 +20,13 @@ package org.platkmframework.test;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
-import org.platkmframework.jpa.base.PlatkmEntityManager;
+import org.platkmframework.jpa.base.PlatkmORMEntityManager;
 import org.platkmframework.jpa.persistence.PlatkmEntityManagerFactory; 
 
 @Disabled
 public class QueryManagerDao_Test {
 	
-	static PlatkmEntityManager platkmEntityManager;
+	static PlatkmORMEntityManager platkmEntityManager;
 	static String testh2persistenceunit5 = "testh2persistenceunit5";
 	static PlatkmEntityManagerFactory plakmEntityManagerFactory;
  

@@ -187,6 +187,7 @@ public abstract class DatabaseMapperImpl implements DatabaseMapper {
 	private final boolean check(BasicJavaValueParser<?> vp, Class<?> javaType) {
 		return 
 				vp.getJavaType().getName().equals(javaType.getName()) ||
+				(javaType.isPrimitive() && vp.getJavaType().getSimpleName().equalsIgnoreCase(javaType.getName())) ||
 					(javaType.isArray() &&  vp.getJavaType().getComponentType() != null &&
 				(javaType.getComponentType().getSimpleName().equals(vp.getJavaType().getComponentType().getSimpleName())) 
 		);

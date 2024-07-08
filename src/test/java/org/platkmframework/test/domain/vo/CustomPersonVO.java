@@ -20,7 +20,7 @@ package org.platkmframework.test.domain.vo;
 
 import java.io.Serializable;
 
-import javax.persistence.Column; 
+import jakarta.persistence.Column;
 
 public class CustomPersonVO  implements Serializable{
 

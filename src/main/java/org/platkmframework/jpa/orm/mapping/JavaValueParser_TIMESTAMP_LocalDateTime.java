@@ -20,6 +20,10 @@ package org.platkmframework.jpa.orm.mapping;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import org.platkmframework.content.project.ProjectContent;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -45,12 +49,21 @@ public final class JavaValueParser_TIMESTAMP_LocalDateTime extends BasicJavaValu
 		if(value == null) ps.setNull(index, java.sql.Types.TIMESTAMP);
 		
 		if(value instanceof String) {
-			ps.setObject(index, Timestamp.valueOf(value.toString()));
+			
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ProjectContent.instance().getDateTimeFormat()); 
+			LocalDateTime dateTime = LocalDateTime.parse(value.toString(), formatter);
+			ps.setObject(index, java.sql.Timestamp.valueOf((LocalDateTime)dateTime));
+			
 		}else if(value instanceof Timestamp) {
+			
 			ps.setTimestamp(index, (Timestamp)value); 
+			
 		}else if(value instanceof LocalDateTime) {
+			
 			ps.setTimestamp(index, java.sql.Timestamp.valueOf((LocalDateTime)value)); 
+			
 		}else
+			
 			ps.setNull(index, java.sql.Types.TIMESTAMP);
 		
 	}

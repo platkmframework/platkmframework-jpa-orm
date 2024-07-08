@@ -32,20 +32,20 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.persistence.FlushModeType;
-import javax.persistence.LockModeType;
-import javax.persistence.Parameter;
-import javax.persistence.PersistenceException; 
-import javax.persistence.TemporalType;
-import javax.persistence.TypedQuery;
-
 import org.apache.commons.lang3.NotImplementedException;
 import org.platkmframework.jpa.base.ParameterImpl;
 import org.platkmframework.jpa.base.ParameterInfo;
 import org.platkmframework.jpa.exception.DatabaseValidationException;
 import org.platkmframework.jpa.orm.mapping.DatabaseMapperImpl;
 import org.platkmframework.jpa.orm.mapping.DbMappingUtil;
-import org.platkmframework.util.error.InvocationException; 
+import org.platkmframework.util.error.InvocationException;
+
+import jakarta.persistence.FlushModeType;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.Parameter;
+import jakarta.persistence.PersistenceException;
+import jakarta.persistence.TemporalType;
+import jakarta.persistence.TypedQuery; 
 
 
 /**

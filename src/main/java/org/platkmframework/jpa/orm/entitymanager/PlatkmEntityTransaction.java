@@ -21,9 +21,12 @@ package org.platkmframework.jpa.orm.entitymanager;
 import java.sql.Connection;
 import java.sql.SQLException; 
 
-import javax.persistence.EntityTransaction;  
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.platkmframework.jpa.exception.PlatkmJpaException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import jakarta.persistence.EntityTransaction;
 
 
 /**
@@ -33,6 +36,9 @@ import org.platkmframework.jpa.exception.PlatkmJpaException;
  *   	Eduardo Iglesias - initial API and implementation
  **/
 public class PlatkmEntityTransaction implements EntityTransaction{
+	
+	
+	private static Logger logger = LoggerFactory.getLogger(PlatkmEntityTransaction.class);
 	  
 	 protected BasicDataSource ds;
 	 protected boolean rollbackOnly = false;
@@ -59,6 +65,7 @@ public class PlatkmEntityTransaction implements EntityTransaction{
 			rollbacked = false;
 			
 		} catch (SQLException e) {
+			logger.error(e.getMessage(), e);
 			throw new PlatkmJpaException(e);
 		}
 		
@@ -71,6 +78,7 @@ public class PlatkmEntityTransaction implements EntityTransaction{
 			if(!active || rollbacked) throw new IllegalStateException("commit not available active " + active + " and rollbacked " + rollbacked);
 			con.commit();
 		} catch ( SQLException e) {
+			logger.error(e.getMessage(), e);
 			throw new PlatkmJpaException(e);
 		}
 	}
@@ -82,6 +90,7 @@ public class PlatkmEntityTransaction implements EntityTransaction{
 			con.rollback();
 			rollbacked = true;
 		} catch (SQLException e) {
+			logger.error(e.getMessage(), e);
 			throw new PlatkmJpaException(e);
 		}
 	}

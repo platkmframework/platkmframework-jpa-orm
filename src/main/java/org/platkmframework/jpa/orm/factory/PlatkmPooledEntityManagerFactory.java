@@ -23,7 +23,7 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.pool2.BasePooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
-import org.platkmframework.jpa.base.PlatkmEntityManager;
+import org.platkmframework.jpa.base.PlatkmORMEntityManager;
 import org.platkmframework.jpa.orm.entitymanager.PlatkmEntityManagerImpl;
 import org.platkmframework.jpa.orm.persistence.ORMPersistenceUnit;
 import org.platkmframework.util.DataTypeUtil; 
@@ -35,7 +35,7 @@ import org.platkmframework.util.DataTypeUtil;
  *   Contributors: 
  *   	Eduardo Iglesias - initial API and implementation
  **/
-public class PlatkmPooledEntityManagerFactory extends BasePooledObjectFactory<PlatkmEntityManager>{
+public class PlatkmPooledEntityManagerFactory extends BasePooledObjectFactory<PlatkmORMEntityManager>{
 
 	private BasicDataSource ds;
 	private ORMPersistenceUnit  persistenceUnit; 
@@ -52,7 +52,7 @@ public class PlatkmPooledEntityManagerFactory extends BasePooledObjectFactory<Pl
 		ds.setDriverClassName(persistenceUnit.getStringPropertyValue("javax.persistence.jdbc.driver"));
 		ds.setAutoCommitOnReturn(DataTypeUtil.getBooleanValue(persistenceUnit.getProperties().get("javax.persistence.jdbc.auto.commit"), false));
 		ds.setDefaultAutoCommit(DataTypeUtil.getBooleanValue(persistenceUnit.getProperties().get("javax.persistence.jdbc.default.auto.commit"), false));
-		
+		ds.setMaxTotal(DataTypeUtil.getIntegerValue(persistenceUnit.getProperties().get("javax.persistence.jdbc.max.total"), 100));
 		ds.setAutoCommitOnReturn(DataTypeUtil.getBooleanValue(persistenceUnit.getProperties().get("javax.persistence.jdbc.auto.commit"), false));
 		ds.setDefaultAutoCommit(DataTypeUtil.getBooleanValue(persistenceUnit.getProperties().get("javax.persistence.jdbc.default.auto.commit"), false));
 
@@ -61,17 +61,17 @@ public class PlatkmPooledEntityManagerFactory extends BasePooledObjectFactory<Pl
 
 	
 	@Override
-	public PlatkmEntityManager create() throws Exception {  
-		return new PlatkmEntityManagerImpl(this.persistenceUnit, persistenceUnit.getSqlSentencesProcessor() , ds );
+	public PlatkmORMEntityManager create() throws Exception {  
+		return new PlatkmEntityManagerImpl(this.persistenceUnit, persistenceUnit.getSqlSentencesProcessor(), ds);
 	}
 
 	@Override
-	public PooledObject<PlatkmEntityManager> wrap(PlatkmEntityManager platkmEntityManager) {
+	public PooledObject<PlatkmORMEntityManager> wrap(PlatkmORMEntityManager platkmEntityManager) {
 		return new DefaultPooledObject<>(platkmEntityManager);
 	}
 	
     @Override
-    public void passivateObject(PooledObject<PlatkmEntityManager> platkmEntityManager) throws Exception {
+    public void passivateObject(PooledObject<PlatkmORMEntityManager> platkmEntityManager) throws Exception {
     	super.passivateObject(platkmEntityManager);
     }
 	 

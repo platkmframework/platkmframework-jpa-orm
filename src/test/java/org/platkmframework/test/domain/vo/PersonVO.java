@@ -21,7 +21,7 @@ package org.platkmframework.test.domain.vo;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import javax.persistence.Column; 
+import jakarta.persistence.Column;
 
 public class PersonVO  implements Serializable{
 

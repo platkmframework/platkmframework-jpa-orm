@@ -30,6 +30,7 @@ import org.platkmframework.content.ObjectContainer;
 import org.platkmframework.database.query.common.ColumnInfoValue;
 import org.platkmframework.doi.data.BeanMethodInfo;
 import org.platkmframework.jpa.base.PlakmBaseDao;
+import org.platkmframework.jpa.converter.BaseConverter;
 import org.platkmframework.jpa.converter.JpaConverterJson;
 import org.platkmframework.jpa.exception.DatabaseValidationException;
 import org.platkmframework.jpa.orm.mapping.DatabaseMapperImpl;
@@ -187,6 +188,7 @@ public abstract class PlatkmEntityManagerBase  extends PlakmBaseDao{
 			ColumnInfoValue columnInfoValue; 
 			List<ColumnInfoValue> pkList = new ArrayList<>();
 			JpaConverterJson<?> jpaConverterJson;
+			BaseConverter baseConverter;
 			BeanMethodInfo beanMethodInfo;
 			int y = 0;
 			for (int i = 0; i < columns.size(); i++){ 
@@ -202,9 +204,15 @@ public abstract class PlatkmEntityManagerBase  extends PlakmBaseDao{
 					_validate(columnInfoValue, value);
 					if(columnInfoValue.getConverter() != null) {
 						List<Object> list =  ObjectContainer.instance().getListObjectByInstance(columnInfoValue.getConverter());
-						if(list != null && !list.isEmpty()) {
-							jpaConverterJson = JpaConverterJson.class.cast(list.get(0));
-							DbMappingUtil.setValue(String.class, ps, y, value != null?  jpaConverterJson.convertToDatabaseColumn(value) :"" , (DatabaseMapperImpl) persistenceUnit.getDatabaseMapper());
+						if(list != null && !list.isEmpty()){
+							if(list.get(0) instanceof JpaConverterJson){
+								jpaConverterJson = JpaConverterJson.class.cast(list.get(0));
+								DbMappingUtil.setValue(String.class, ps, y, value != null?  jpaConverterJson.convertToDatabaseColumn(value) :"" , (DatabaseMapperImpl) persistenceUnit.getDatabaseMapper());
+							}else {
+								baseConverter = BaseConverter.class.cast(list.get(0));
+								DbMappingUtil.setValue(String.class, ps, y, value != null?  baseConverter.convertToDatabaseColumn(value) :"" , (DatabaseMapperImpl) persistenceUnit.getDatabaseMapper());
+							}
+								
 						}else {
 							throw new DatabaseValidationException("para el valor del campo: " + columnInfoValue.getName()  + ", no se encontró el convertidor-> " + columnInfoValue.getConverter().toString());
 						}

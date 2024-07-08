@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.platkmframework.common.domain.filter.criteria.DeleteCriteria;
 import org.platkmframework.common.domain.filter.criteria.base.ConditionFilterBase;
 import org.platkmframework.common.domain.filter.enumerator.ConditionOperator;
@@ -32,7 +32,7 @@ import org.platkmframework.common.domain.filter.enumerator.SqlOrder;
 import org.platkmframework.common.domain.filter.info.FilterData;
 import org.platkmframework.common.domain.filter.info.FilterDataType;
 import org.platkmframework.database.query.manager.model.QuerySyntax;
-import org.platkmframework.jpa.base.PlatkmEntityManager;
+import org.platkmframework.jpa.base.PlatkmORMEntityManager;
 import org.platkmframework.jpa.exception.DatabaseValidationException;
 import org.platkmframework.jpa.processor.ProcessResult;
 import org.platkmframework.jpa.processor.SqlSentencesProcessorBase;
@@ -48,7 +48,7 @@ import org.platkmframework.jpa.processor.SqlSentencesProcessorBase;
 public class SqlSentencesProcessorPostgreSQL extends SqlSentencesProcessorBase {
 
 
-	private static final Logger logger = LogManager.getLogger(SqlSentencesProcessorPostgreSQL.class);
+	private static Logger logger = LoggerFactory.getLogger(SqlSentencesProcessorPostgreSQL.class);
 	
 	
 	protected String getExpression(String colName, String operator, Object value, List<Object> param) {
@@ -201,7 +201,7 @@ public class SqlSentencesProcessorPostgreSQL extends SqlSentencesProcessorBase {
 	}
 
 	@Override
-	public ProcessResult removeProcess(PlatkmEntityManager platkmEntityManager, DeleteCriteria deleteCriteria, List<Object> param) throws DatabaseValidationException {
+	public ProcessResult removeProcess(PlatkmORMEntityManager platkmEntityManager, DeleteCriteria deleteCriteria, List<Object> param) throws DatabaseValidationException {
 		
 	List<FilterData> joinTables = new ArrayList<>(); 
 		List<FilterData> others = new ArrayList<>();

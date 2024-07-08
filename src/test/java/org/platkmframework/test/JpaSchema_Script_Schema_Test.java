@@ -20,7 +20,7 @@ package org.platkmframework.test;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.platkmframework.jpa.base.PlatkmEntityManager; 
+import org.platkmframework.jpa.base.PlatkmORMEntityManager; 
 
 
 public class JpaSchema_Script_Schema_Test { 
@@ -28,8 +28,8 @@ public class JpaSchema_Script_Schema_Test {
 	 static final String testh2persistenceunit   = "testh2persistenceunit";
 	 static final String testh2persistenceunit_2 = "testh2persistenceunit_2";
 	 
-	 static PlatkmEntityManager platkmEntityManager1;
-	 static PlatkmEntityManager platkmEntityManager2;
+	 static PlatkmORMEntityManager platkmEntityManager1;
+	 static PlatkmORMEntityManager platkmEntityManager2;
 	 
 	 
 	 @BeforeAll
@@ -52,7 +52,7 @@ public class JpaSchema_Script_Schema_Test {
 	//	dropCreateInsert(platkmEntityManager2); 
 	}
 	
-	public void dropCreateInsert(PlatkmEntityManager platkmEntityManager){ 
+	public void dropCreateInsert(PlatkmORMEntityManager platkmEntityManager){ 
 	/**	 
 		platkmEntityManager.getTransaction().begin();
 		

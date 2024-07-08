@@ -22,11 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import javax.persistence.Query;
-
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.platkmframework.common.domain.filter.criteria.DeleteCriteria;
 import org.platkmframework.common.domain.filter.criteria.WhereCriteria;
 import org.platkmframework.common.domain.filter.criteria.base.ConditionFilterBase;
@@ -37,10 +35,12 @@ import org.platkmframework.common.domain.filter.info.FilterData;
 import org.platkmframework.common.domain.filter.info.FilterDataType;
 import org.platkmframework.database.query.manager.model.QuerySelect;
 import org.platkmframework.database.query.manager.model.QuerySyntax;
-import org.platkmframework.jpa.base.PlatkmEntityManager;
+import org.platkmframework.jpa.base.PlatkmORMEntityManager;
 import org.platkmframework.jpa.exception.DatabaseValidationException;
 import org.platkmframework.jpa.processor.ProcessResult;
 import org.platkmframework.jpa.processor.SqlSentencesProcessorBase;
+
+import jakarta.persistence.Query;
  
 
 
@@ -52,9 +52,7 @@ import org.platkmframework.jpa.processor.SqlSentencesProcessorBase;
  **/
 public class SqlSentencesProcessorSqlServer extends SqlSentencesProcessorBase {
 
-
-	private static final Logger logger = LogManager.getLogger(SqlSentencesProcessorSqlServer.class);
-	
+	private static Logger logger = LoggerFactory.getLogger(SqlSentencesProcessorSqlServer.class);
 	
 	protected String getExpression(String colName, String operator, Object value, List<Object> param) {
 		
@@ -206,7 +204,7 @@ public class SqlSentencesProcessorSqlServer extends SqlSentencesProcessorBase {
 	}
 
 	@Override
-	public ProcessResult removeProcess(PlatkmEntityManager platkmEntityManager, DeleteCriteria deleteCriteria, List<Object> param) throws DatabaseValidationException {
+	public ProcessResult removeProcess(PlatkmORMEntityManager platkmEntityManager, DeleteCriteria deleteCriteria, List<Object> param) throws DatabaseValidationException {
 		
 	List<FilterData> joinTables = new ArrayList<>(); 
 		List<FilterData> others = new ArrayList<>();
@@ -378,7 +376,7 @@ public class SqlSentencesProcessorSqlServer extends SqlSentencesProcessorBase {
 	}
 
 
-	protected String processOffset(ProcessResult processResult, String sql, PlatkmEntityManager platkmEntityManager, List<Object> parameters) {
+	protected String processOffset(ProcessResult processResult, String sql, PlatkmORMEntityManager platkmEntityManager, List<Object> parameters) {
 		
 		int pageCount = 0;
         int page = 0;
@@ -411,7 +409,7 @@ public class SqlSentencesProcessorSqlServer extends SqlSentencesProcessorBase {
 	}
  
 	@Override
-	public ProcessResult process(PlatkmEntityManager platkmEntityManager, QuerySelect querySelect, WhereCriteria whereCriteria, List<Object> param, String... replacements) throws DatabaseValidationException {
+	public ProcessResult process(PlatkmORMEntityManager platkmEntityManager, QuerySelect querySelect, WhereCriteria whereCriteria, List<Object> param, String... replacements) throws DatabaseValidationException {
 		List<Object> parameters = cloneList(param); 
 	    StringBuilder sb = new StringBuilder();  
 	    sb.append(querySelect.getSelect() + " " + (querySelect.getFrom()!=null?querySelect.getFrom():""));
@@ -506,7 +504,7 @@ public class SqlSentencesProcessorSqlServer extends SqlSentencesProcessorBase {
 		return processResult;		
 	}
 	
-	protected Integer processOffsetRecordCount(String sql, PlatkmEntityManager platkmEntityManager, List<Object> parameters){
+	protected Integer processOffsetRecordCount(String sql, PlatkmORMEntityManager platkmEntityManager, List<Object> parameters){
 		
 		String sqlCount = "SELECT count('x') as cantidad FROM (" + sql  + " OFFSET 0 ROWS) AS vwSelect";
          

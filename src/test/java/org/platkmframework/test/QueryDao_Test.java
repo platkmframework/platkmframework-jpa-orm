@@ -28,13 +28,13 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.platkmframework.common.domain.filter.criteria.SearchCriteria;
 import org.platkmframework.database.query.common.exception.DaoException;
-import org.platkmframework.jpa.base.PlatkmEntityManager;
+import org.platkmframework.jpa.base.PlatkmORMEntityManager;
 import org.platkmframework.jpa.persistence.PlatkmEntityManagerFactory; 
 
 @Disabled
 public class QueryDao_Test {
 	
-	static PlatkmEntityManager platkmEntityManager;
+	static PlatkmORMEntityManager platkmEntityManager;
 	static String testh2persistenceunit3 = "testh2persistenceunit3";
 	static PlatkmEntityManagerFactory plakmEntityManagerFactory;
  

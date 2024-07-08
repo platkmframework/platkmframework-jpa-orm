@@ -26,22 +26,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Column;
-import javax.persistence.EntityGraph;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.FlushModeType;
-import javax.persistence.Id;
-import javax.persistence.LockModeType;
-import javax.persistence.Query;
-import javax.persistence.StoredProcedureQuery;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.CriteriaUpdate;
-import javax.persistence.metamodel.Metamodel;
-
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
@@ -60,8 +44,8 @@ import org.platkmframework.databasereader.core.DataBaseReaderConstants;
 import org.platkmframework.databasereader.core.DatabaseReader;
 import org.platkmframework.databasereader.core.IDatabaseReader;
 import org.platkmframework.databasereader.model.Table;
-import org.platkmframework.jpa.base.PlatkmDb;
 import org.platkmframework.jpa.base.PlatkmEntityManager;
+import org.platkmframework.jpa.base.PlatkmORMEntityManager;
 import org.platkmframework.jpa.base.PlatkmQuery;
 import org.platkmframework.jpa.exception.DatabaseValidationException;
 import org.platkmframework.jpa.exception.PlatkmJpaException;
@@ -74,7 +58,23 @@ import org.platkmframework.jpa.processor.SqlSentencesProcessor;
 import org.platkmframework.jpa.querydao.QueryDaoImpl;
 import org.platkmframework.jpa.querydao.QueryManagerDaoImpl;
 import org.platkmframework.jpa.util.DaoUtil;
-import org.platkmframework.util.reflection.ReflectionUtil; 
+import org.platkmframework.util.reflection.ReflectionUtil;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityGraph;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.FlushModeType;
+import jakarta.persistence.Id;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.Query;
+import jakarta.persistence.StoredProcedureQuery;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaDelete;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.CriteriaUpdate;
+import jakarta.persistence.metamodel.Metamodel; 
 
 
 /**
@@ -83,7 +83,7 @@ import org.platkmframework.util.reflection.ReflectionUtil;
  *   Contributors: 
  *   	Eduardo Iglesias - initial API and implementation
  **/
-public class PlatkmEntityManagerImpl extends PlatkmEntityManagerBase implements PlatkmEntityManager , PlatkmDb {
+public class PlatkmEntityManagerImpl extends PlatkmEntityManagerBase implements PlatkmORMEntityManager, PlatkmEntityManager {
     
 	//private Map<String, Object> properties; 
 	private FlushModeType flushMode;
@@ -321,7 +321,7 @@ public class PlatkmEntityManagerImpl extends PlatkmEntityManagerBase implements 
 	}
 
 	@Override
-	public Query createQuery(CriteriaUpdate updateQuery) {
+	public Query createQuery(CriteriaUpdate  updateQuery) {
 		throw new NotImplementedException("createQuery(CriteriaUpdate updateQuery)"); 
 	}
 
@@ -555,6 +555,18 @@ public class PlatkmEntityManagerImpl extends PlatkmEntityManagerBase implements 
 	@Override
 	public List<org.platkmframework.databasereader.model.Column> getTableColumnMetaData(String tablename) {
 		return databaseReader.getTableColumnMetaData(platkmEntityTransaction.getCon(),tablename);
+	}
+
+	@Override
+	public ColumnInfoValue insert(String entity, List<ColumnInfoValue> columns)
+			throws DatabaseValidationException, PlatkmJpaException {
+		return insertSQL(entity, columns);
+	}
+
+	@Override
+	public void update(String entity, List<ColumnInfoValue> columns)
+			throws DatabaseValidationException, PlatkmJpaException {
+		updateSQL(entity, columns);
 	}
 
 }

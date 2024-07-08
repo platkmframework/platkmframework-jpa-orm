@@ -28,15 +28,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
-
+import org.apache.commons.lang3.StringUtils;
+import org.platkmframework.annotation.Component;
+import org.platkmframework.annotation.db.ConverterReference;
 import org.platkmframework.content.ObjectContainer;
+import org.platkmframework.jpa.converter.BaseConverter;
 import org.platkmframework.jpa.converter.JpaConverterJson;
 import org.platkmframework.jpa.exception.DatabaseConnectionException;
 import org.platkmframework.jpa.exception.DatabaseValidationException;
 import org.platkmframework.util.error.InvocationException;
 import org.platkmframework.util.reflection.ReflectionUtil;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 
 public class DbMappingUtil {
 	
@@ -58,7 +62,7 @@ public class DbMappingUtil {
 		return javaValueParser.readValue(rs, rsIndex);
 	}
 	
-	public static Object getValue(JpaConverterJson<?> jpaConverterJson, ResultSet rs, int rsIndex, DatabaseMapperImpl databaseMapper ) throws SQLException { 
+	public static Object getValueFromJsonConverter(JpaConverterJson<?> jpaConverterJson, ResultSet rs, int rsIndex, DatabaseMapperImpl databaseMapper ) throws SQLException { 
 		JavaValueParser_Converter javaValueParser = databaseMapper.getJavaValueParserByConverter();
 		
 		if(javaValueParser == null) {
@@ -70,6 +74,19 @@ public class DbMappingUtil {
 		} 	
 		
 		return jpaConverterJson.convertToEntityAttribute(javaValueParser.readValue(rs, rsIndex));
+	}
+	
+	public static Object getValueFromCustomConverter(BaseConverter attributeConverter, ResultSet rs, int rsIndex, DatabaseMapperImpl databaseMapper ) throws SQLException { 
+		JavaValueParser_Converter javaValueParser = databaseMapper.getJavaValueParserByConverter();
+		
+		if(javaValueParser == null) {
+			 throw new DatabaseConnectionException("No se encontró la información para la " +
+						" clase->" + attributeConverter.getClass().getName()  +
+						" column name ->" + rs.getMetaData().getColumnType(rsIndex)
+						);
+		} 	
+		
+		return attributeConverter.convertToEntityAttribute(javaValueParser.readValue(rs, rsIndex));
 	}
 	
 	public static void setValue(Class<?> classType, PreparedStatement ps, int index, Object value, DatabaseMapperImpl databaseMapper ) throws SQLException { 
@@ -87,7 +104,6 @@ public class DbMappingUtil {
 			List<Field> fields = ReflectionUtil.getAllFieldHeritage(class1);
 			//String[] arrayColumn = columns.split(",");  
 			String columName;
-			JpaConverterJson<?> jpaConverterJson;
 			for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) { 
 				 for (Field field : fields) {
 					 if(field.isAnnotationPresent(Column.class)) {
@@ -100,14 +116,30 @@ public class DbMappingUtil {
 							 
 							List<Object> list =  ObjectContainer.instance().getListObjectByInstance(field.getAnnotation(Convert.class).converter());
 							if(list != null && !list.isEmpty()) {
-								jpaConverterJson = JpaConverterJson.class.cast(list.get(0));
-								ReflectionUtil.setAttributeValue(instance, field,  
-										 getValue(jpaConverterJson, rs, i+1, databaseMapper), false);
+								
+								processConverter(instance, field, rs, databaseMapper, i, list.get(0));
+								
 							}else {
 								throw new DatabaseValidationException("para el valor del campo: " + field.getName()  + ", no se encontró el convertidor-> " + JpaConverterJson.class.toString());
 							} 
 							 
+						 }else if(field.isAnnotationPresent(ConverterReference.class)) {
+							 String references = field.getAnnotation(ConverterReference.class).reference();
+							 if(StringUtils.isNotBlank(references)) {
+								 List<Object> components = ObjectContainer.instance().getListObjectByAnnontation(Component.class);
+								 Object converter = components.stream().filter((o)->  references.equalsIgnoreCase(o.getClass().getAnnotation(Component.class).reference())).findFirst().orElse(null);
+								 if(converter != null) {
+									 processConverter(instance, field, rs, databaseMapper, i, converter);
+								 }else {
+									 ReflectionUtil.setAttributeValue(instance, field,  
+											 getValue(rs.getMetaData().getColumnType(i+1), field.getType(), rs, i+1, databaseMapper), false);
+								 }
+							 }else {
+								 ReflectionUtil.setAttributeValue(instance, field,  
+										 getValue(rs.getMetaData().getColumnType(i+1), field.getType(), rs, i+1, databaseMapper), false);
+							 }
 						 }else {
+						  
 							 ReflectionUtil.setAttributeValue(instance, field,  
 									 getValue(rs.getMetaData().getColumnType(i+1), field.getType(), rs, i+1, databaseMapper), false);
 						 }
@@ -120,6 +152,22 @@ public class DbMappingUtil {
 		} catch (InvocationException | SQLException e) {
 			throw new DatabaseConnectionException(e.getMessage());
 		} 
+		
+		
+	}
+	
+	protected static void processConverter(Object instance, Field field, ResultSet rs, DatabaseMapperImpl databaseMapper, int index, Object converter) throws InvocationException, SQLException {
+		
+		if(converter instanceof JpaConverterJson) {
+			JpaConverterJson<?> jpaConverterJson = JpaConverterJson.class.cast(converter);
+			ReflectionUtil.setAttributeValue(instance, field,  
+					getValueFromJsonConverter(jpaConverterJson, rs, index+1, databaseMapper), false); 
+		}else {
+			
+			BaseConverter attributeConverter = BaseConverter.class.cast(converter);
+			ReflectionUtil.setAttributeValue(instance, field,  
+					getValueFromCustomConverter(attributeConverter, rs, index+1, databaseMapper), false); 
+		}
 	}
 	
 	public static Properties getCustomProperties(ResultSet rs, String[] arrayColumn, DatabaseMapperImpl databaseMapper) {
