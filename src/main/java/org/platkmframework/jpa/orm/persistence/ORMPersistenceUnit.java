@@ -3,21 +3,39 @@ package org.platkmframework.jpa.orm.persistence;
 import org.platkmframework.jpa.persistence.PersistenceUnit;
 import org.platkmframework.jpa.processor.SqlSentencesProcessor;
 
+/**
+ *   Author:
+ *     Eduardo Iglesias
+ *   Contributors:
+ *   	Eduardo Iglesias - initial API and implementation
+ */
 public class ORMPersistenceUnit extends PersistenceUnit {
 
-	private SqlSentencesProcessor  sqlSentencesProcessor;
+    /**
+     * Atributo sqlSentencesProcessor
+     */
+    private SqlSentencesProcessor sqlSentencesProcessor;
 
-	public ORMPersistenceUnit() {
-		super(); 
-	}
+    /**
+     * Constructor ORMPersistenceUnit
+     */
+    public ORMPersistenceUnit() {
+        super();
+    }
 
-	public SqlSentencesProcessor getSqlSentencesProcessor() {
-		return sqlSentencesProcessor;
-	}
+    /**
+     * getSqlSentencesProcessor
+     * @return SqlSentencesProcessor
+     */
+    public SqlSentencesProcessor getSqlSentencesProcessor() {
+        return sqlSentencesProcessor;
+    }
 
-	public void setSqlSentencesProcessor(SqlSentencesProcessor  sqlSentencesProcessor) {
-		this.sqlSentencesProcessor = sqlSentencesProcessor;
-	}
-	
-	
+    /**
+     * setSqlSentencesProcessor
+     * @param sqlSentencesProcessor sqlSentencesProcessor
+     */
+    public void setSqlSentencesProcessor(SqlSentencesProcessor sqlSentencesProcessor) {
+        this.sqlSentencesProcessor = sqlSentencesProcessor;
+    }
 }

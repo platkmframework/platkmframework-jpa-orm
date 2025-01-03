@@ -26,11 +26,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test; 
-import org.platkmframework.common.domain.filter.criteria.DeleteCriteria;
-import org.platkmframework.common.domain.filter.criteria.SearchCriteria;
 import org.platkmframework.database.query.common.exception.DaoException;
 import org.platkmframework.jpa.base.PlatkmORMEntityManager;
 import org.platkmframework.jpa.persistence.PlatkmEntityManagerFactory;
+import org.platkmframework.persistence.filter.criteria.DeleteCriteria;
+import org.platkmframework.persistence.filter.criteria.SearchCriteria;
 
 @Disabled
 public class QueryDao_Delete_Test {

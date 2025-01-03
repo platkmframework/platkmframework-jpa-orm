@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ProjectQueriesContainer>
+<DataBase>
+	<id>database_postgresql</id>
+	<name>postgresql</name>
+	<QuerySyntax>
+		<id>concat_postgresql</id>
+		<name>concat</name>
+		<value>||</value>
+	</QuerySyntax>
+	<QuerySyntax>
+		<id>boolean_true_postgresql</id>
+		<name>boolean_true</name>
+		<value>true</value>
+	</QuerySyntax>
+	<QuerySyntax>
+		<id>boolean_false_postgresql</id>
+		<name>boolean_false</name>
+		<value>false</value>
+	</QuerySyntax>
+	<QuerySyntax>
+		<id>sql_lower_postgresql</id>
+		<name>sql_lower</name>
+		<value>LOWER</value>
+	</QuerySyntax>
+	<QuerySyntax>
+		<id>sql_last_table_sequence_postgresql</id>
+		<name>last_table_sequence</name>
+		<value>select currval(pg_get_serial_sequence('${tableName}', 'id'))</value>
+	</QuerySyntax>
+	<QuerySyntax>
+		<id>sql_inner_join</id>
+		<name>inner_join</name>
+		<value>INNER JOIN</value>
+	</QuerySyntax>
+	<QuerySyntax>
+		<id>sql_left_join</id>
+		<name>left_join</name>
+		<value>LEFT JOIN</value>
+	</QuerySyntax>
+	<QuerySyntax>
+		<id>sql_right_join</id>
+		<name>right_join</name>
+		<value>RIGHT JOIN</value>
+	</QuerySyntax>
+	<QueriesGroup>
+		<id>query_group_1_postgresql</id>
+		<name>system_group_posgresql</name>
+		<createdBy>system</createdBy>
+		<createdDate>25/03/2020</createdDate>
+		<QuerySelect>
+			<id>query_postgresql_012</id>
+			<name>SELECT_TOP_CUSTOM_TABLE</name>
+			<type>select</type>
+			<select>
+		 		SELECT ${tableColumns}
+			</select>
+			<from> FROM ${tablename} ${tableAlias}</from>
+			<where></where> 
+			<additional>
+				ORDER BY id ASC LIMIT 1
+			</additional>
+		</QuerySelect> 
+		<QuerySelect>
+			<id>query_postgresql_01_by_id</id>
+			<name>SELECT_TABLE_RECORD_BY_ID</name>
+			<type>select</type>
+			<select>
+		 		SELECT * 
+			</select>
+			<from>FROM ${tablename}</from>
+			<where> WHERE id=?</where> 
+			<additional>
+			</additional>
+		</QuerySelect> 
+		<QuerySelect>
+			<id>FIND_BY_COUNT_CUSTOM_TABLE_postgresql</id>
+			<name>FIND_BY_COUNT_CUSTOM_TABLE</name>
+			<type>select</type>
+			<select>
+				SELECT count('x') as cantidad 
+			</select> 
+			<from> FROM ${tableName} ${tableAlias}</from>
+			<where>${tableWhere}</where> 
+		</QuerySelect>
+		<QuerySelect>
+			<id>FIND_BY_CUSTOM_TABLE_postgresql</id>
+			<name>FIND_BY_CUSTOM_TABLE</name>
+			<type>select</type>
+			<select>SELECT ${tableColumns}  </select> 
+			<from>FROM ${tableName} ${tableAlias}</from>
+			<where>${tableWhere}</where> 
+		</QuerySelect>
+		<QuerySelect>
+			<id>FIND_ONE_BY_CUSTOM_TABLE_postgresql</id>
+			<name>FIND_ONE_BY_CUSTOM_TABLE</name>
+			<type>select</type>
+			<select>SELECT ${tableColumns}  </select> 
+			<from>FROM ${tableName} ${tableAlias}</from>
+			<where></where>
+			<additional>LIMIT 1</additional> 
+		</QuerySelect>
+		<QuerySelect>
+			<id>FIND_BY_CUSTOM_TABLE_ORDER_postgresql</id>
+			<name>FIND_BY_CUSTOM_TABLE_ORDER</name>
+			<type>select</type>
+			<select>SELECT ${tableColumns} </select> 
+			<from> FROM ${tableName} ${tableAlias}</from>
+			<where></where> 
+			<additional>
+				ORDER BY ${orderColumn} ${orderType}
+			</additional>
+		</QuerySelect>
+		<QuerySelect>
+			<id>SEARCH_PROCESS_postgresql</id>
+			<name>SEARCH_PROCESS</name>
+			<type>select</type>
+			<select>
+				SELECT ${tableColumns} 
+			</select> 
+			<from>FROM ${tableName} ${tableAlias}</from>
+			<where> 
+			</where>
+			<additional>
+				 order by ${orderColumn} OFFSET ${offsetValue} ROWS FETCH NEXT ${recordPerPage} ROWS ONLY
+			</additional>
+			<fastsearch></fastsearch>
+		</QuerySelect>	
+		<QuerySelect>
+			<id>SEARCH_PROCESS_COUNT_postgresql</id>
+			<name>SEARCH_PROCESS_COUNT</name>
+			<type>select</type>
+			<select>
+				SELECT count('x') as cantidad 
+			</select> 
+			<from>FROM (${searchSqlSentence}) AS vwSelect</from>
+			<where></where> 
+		</QuerySelect>
+		<QuerySelect>
+			<id>UPDATE_RECORD_LOGIC_REMOVED_postgresql</id>
+			<name>UPDATE_RECORD_LOGIC_REMOVED</name>
+			<type>update</type>
+			<select>
+				UPDATE ${tableName} SET record_deleted = ?
+			</select> 
+			<where> where id=?</where> 
+		</QuerySelect>	
+		<QuerySelect>
+			<id>REMOVE_TABLE_BY_FILTER_postgresql</id>
+			<name>REMOVE_TABLE_BY_FILTER</name>
+			<type>delete</type>
+			<select>
+				DELETE 
+			</select> 
+			<from>FROM  ${tableName}</from>
+			<where></where> 
+		</QuerySelect>
+		<QuerySelect>
+			<id>MODEL_DATA_SEARCH_postgresql</id>
+			<name>MODEL_DATA_SEARCH</name>
+			<type>select</type>
+			<select>
+				select ${columns} 
+			</select> 
+			<from>from ${tableName} ${tableAlias}</from>
+			<where>${tableWhere}</where>  
+			<additional>
+				 order by ${orderColumn} OFFSET ${offsetValue} ROWS FETCH NEXT ${recordPerPage} ROWS ONLY
+			</additional>			
+		</QuerySelect>
+		<QuerySelect>
+			<id>REMOVE_MODELDATA_RECORD_postgresql</id>
+			<name>REMOVE_MODELDATA_RECORD</name>
+			<type>delete</type>
+			<select>
+				DELETE 
+				
+			</select> 
+			<from>FROM ${tableName}</from>
+			<where>where id = ?</where> 
+		</QuerySelect>
+		<QuerySelect>
+			<id>REMOVE_MODELDATA_RECORDS_postgresql</id>
+			<name>REMOVE_MODELDATA_RECORDS</name>
+			<type>delete</type>
+			<select>
+				DELETE 
+				
+			</select> 
+			<from>FROM ${tableName}</from>
+			<where>where id in (?)</where> 
+		</QuerySelect>	 
+		<QuerySelect>
+			<id>FAST_SEARCH_postgresql</id>
+			<name>FAST_SEARCH</name>
+			<type>select</type>
+			<select>
+				select ${id} as key, (${description}) as text 
+			</select> 
+			<from>FROM ${tableName}</from>
+			<where>where LOWER(${likes}) like LOWER(?)</where> 
+			<additional>LIMIT 20</additional> 
+		</QuerySelect>	 
+	</QueriesGroup>
+</DataBase>
+<DataBase>
+	<id>database_mssqlserver</id>
+	<name>mssqlserver</name>
+	<QuerySyntax>
+		<id>concat_mssql</id>
+		<name>concat</name>
+		<value>+</value>
+	</QuerySyntax>
+	<QuerySyntax>
+		<id>boolean_true_mssql</id>
+		<name>boolean_true</name>
+		<value>true</value>
+	</QuerySyntax>
+	<QuerySyntax>
+		<id>boolean_false_mssql</id>
+		<name>boolean_false</name>
+		<value>false</value>
+	</QuerySyntax>
+	<QuerySyntax>
+		<id>sql_lower_mssql</id>
+		<name>sql_lower</name>
+		<value>LOWER</value>
+	</QuerySyntax>
+	<QuerySyntax>
+		<id>sql_last_table_sequence_mssql</id>
+		<name>last_table_sequence</name>
+		<value>SELECT IDENT_CURRENT('${tableName}')</value>
+	</QuerySyntax>
+	<QuerySyntax>
+		<id>sql_left_join</id>
+		<name>left_join</name>
+		<value>LEFT JOIN</value>
+	</QuerySyntax>
+	<QuerySyntax>
+		<id>sql_right_join</id>
+		<name>right_join</name>
+		<value>RIGHT JOIN</value>
+	</QuerySyntax>
+	<QuerySyntax>
+		<id>sql_inner_join</id>
+		<name>inner_join</name>
+		<value>INNER JOIN</value>
+	</QuerySyntax>
+	<QueriesGroup>
+		<id>query_group_1_mssql</id>
+		<name>system_group_mssql</name>
+		<createdBy>system</createdBy>
+		<createdDate>25/03/2020</createdDate>
+		<QuerySelect>
+			<id>query_postgresql_013</id>
+			<name>SELECT_TOP_CUSTOM_TABLE</name>
+			<type>select</type>
+			<select>
+		 		SELECT TOP 1 *
+			</select>
+			<from> FROM ${tablename} </from>
+			<where></where> 
+			<additional>ORDER BY ID ASC</additional>
+		</QuerySelect>  
+		<QuerySelect>
+			<id>FIND_BY_COUNT_CUSTOM_TABLE_mssql</id>
+			<name>FIND_BY_COUNT_CUSTOM_TABLE</name>
+			<type>select</type>
+			<select>
+				SELECT count('x') as cantidad
+			</select>  
+			<from>  FROM  ${tableName}</from>
+			<where>${tableWhere}</where> 
+		</QuerySelect>
+		<QuerySelect>
+			<id>FIND_BY_CUSTOM_TABLE_mssql</id>
+			<name>FIND_BY_CUSTOM_TABLE</name>
+			<type>select</type>
+			<select>SELECT *  </select> 
+			<from>FROM ${tableName}</from>
+			<where></where> 
+		</QuerySelect>
+		<QuerySelect>
+			<id>FIND_ONE_BY_CUSTOM_TABLE_mssql</id>
+			<name>FIND_ONE_BY_CUSTOM_TABLE</name>
+			<type>select</type>
+			<select>SELECT TOP 1</select>
+			<from> FROM ${tableName}</from>
+		</QuerySelect>
+		<QuerySelect>
+			<id>FIND_BY_CUSTOM_TABLE_ORDER_mssql</id>
+			<name>FIND_BY_CUSTOM_TABLE_ORDER</name>
+			<type>select</type>
+			<select>SELECT * </select> 
+			<from>FROM ${tableName}</from>
+			<where></where> 
+			<additional>
+				ORDER BY ${orderColumn} ${orderType}
+			</additional>
+		</QuerySelect>
+		<QuerySelect>
+			<id>SEARCH_PROCESS_mssql</id>
+			<name>SEARCH_PROCESS</name>
+			<type>select</type>
+			<select>
+				SELECT *
+			</select> 
+			<from> FROM ${tableName}</from>
+			<where></where>
+			<additional>
+				 order by ${OrderColumn} OFFSET ${offsetValue} ROWS FETCH NEXT ${RecordPerPage}  ROWS ONLY
+			</additional>
+			<fastsearch></fastsearch>
+		</QuerySelect>	
+		<QuerySelect>
+			<id>SEARCH_PROCESS_COUNT_mssql</id>
+			<name>SEARCH_PROCESS_COUNT</name>
+			<type>select</type>
+			<select>
+				SELECT count('x') as cantidad 
+			</select> 
+			<from>FROM (${searchSqlSentence}) AS vwSelect</from>
+			<where></where> 
+		</QuerySelect>
+		<QuerySelect>
+			<id>UPDATE_RECORD_LOGIC_REMOVED_mssql</id>
+			<name>UPDATE_RECORD_LOGIC_REMOVED</name>
+			<type>update</type>
+			<select>
+				UPDATE ${tableName} SET record_deleted = ?
+			</select> 
+			<where> where id=?</where> 
+		</QuerySelect>	
+		<QuerySelect>
+			<id>REMOVE_TABLE_BY_FILTER_mssql</id>
+			<name>REMOVE_TABLE_BY_FILTER</name>
+			<type>delete</type>
+			<select>
+				DELETE 
+			</select> 
+			<from>FROM  ${tableName}</from>
+			<where></where> 
+		</QuerySelect>
+	</QueriesGroup>
+</DataBase> 
+</ProjectQueriesContainer>
